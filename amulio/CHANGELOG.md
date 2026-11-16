@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Accept boolean `false` app options during bootstrap; Home Assistant serializes disabled options as JSON `false`, which must not be treated as a missing value.
+
 ## 0.1.1
 
 - Make runtime bootstrap failures visible in app logs and fail explicitly when aMule configuration cannot be generated.

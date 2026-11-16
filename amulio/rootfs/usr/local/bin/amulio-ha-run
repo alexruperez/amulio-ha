@@ -20,7 +20,13 @@ on_error() {
 trap 'on_error $LINENO' ERR
 
 option() {
-    jq -er "$1" "$OPTIONS_FILE"
+    local value
+    value=$(jq -r "$1" "$OPTIONS_FILE")
+    if [[ "$value" == "null" ]]; then
+        log "ERROR: required option $1 is missing from $OPTIONS_FILE"
+        return 1
+    fi
+    printf '%s\n' "$value"
 }
 
 secret() {
