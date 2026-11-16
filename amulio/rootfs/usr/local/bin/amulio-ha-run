@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+set -euo pipefail
+umask 077
+
+readonly CONFIG_DIR=/data/config
+readonly SECRET_DIR=/data/secrets
+readonly OPTIONS_FILE=/data/options.json
+readonly AMULE_USER=amule
+
+option() {
+    jq -er "$1" "$OPTIONS_FILE"
+}
+
+secret() {
+    local name=$1 path="$SECRET_DIR/$1"
+    if [[ ! -s "$path" ]]; then
+        python3 - "$path" <<'PY'
+import pathlib
+import secrets
+import sys
+path = pathlib.Path(sys.argv[1])
+path.parent.mkdir(parents=True, exist_ok=True)
+path.write_text(secrets.token_urlsafe(48) + "\n")
+path.chmod(0o600)
+PY
+    fi
+    cat "$path"
+}
+
+PUBLIC_URL=$(option '.public_url')
+TCP_PORT=$(option '.peer_tcp_port')
+UDP_PORT=$(option '.peer_udp_port')
+PREFERRED_LANGUAGES=$(option '.preferred_languages')
+ALLOW_SEASON_PACKS=$(option '.allow_season_packs')
+
+case "$PUBLIC_URL" in
+    http://*|https://*) ;;
+    *) echo 'public_url must be an http(s) URL' >&2; exit 64 ;;
+esac
+
+INSTALL_TOKEN=$(secret install_token)
+TOKEN_SECRET=$(secret token_secret)
+EC_PASSWORD=$(secret amule_ec_password)
+API_ADMIN_PASSWORD=$(secret amuleapi_admin_password)
+
+install -d -o "$AMULE_USER" -g "$AMULE_USER" -m 700 \
+    "$CONFIG_DIR" /data/incoming /data/temp /data/amulio "$SECRET_DIR"
+if [[ ! -f "$CONFIG_DIR/amule.conf" ]]; then
+    su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o -i >/dev/null 2>&1 || true
+fi
+
+EC_PASSWORD_MD5=$(printf '%s' "$EC_PASSWORD" | md5sum | cut -d' ' -f1 | tr 'a-f' 'A-F')
+su-exec "$AMULE_USER" python3 - "$CONFIG_DIR/amule.conf" "$EC_PASSWORD_MD5" "$TCP_PORT" "$UDP_PORT" <<'PY'
+import re
+import sys
+
+path, password, tcp_port, udp_port = sys.argv[1:]
+content = open(path).read()
+for key, value in (
+    ("AcceptExternalConnections", "1"),
+    ("TCPPort", tcp_port),
+    ("UDPPort", udp_port),
+    ("ECPort", "4712"),
+    ("ECPassword", password),
+    ("IncomingDir", "/data/incoming"),
+    ("TempDir", "/data/temp"),
+):
+    if re.search(rf"^{key}=.*$", content, flags=re.MULTILINE):
+        content = re.sub(rf"^{key}=.*$", f"{key}={value}", content, flags=re.MULTILINE)
+    else:
+        content += f"\n{key}={value}\n"
+open(path, "w").write(content)
+PY
+
+su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --set-admin-pass="$API_ADMIN_PASSWORD"
+timeout 3 su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --password="$EC_PASSWORD" \
+    --port=4712 --http-port=4713 >/dev/null 2>&1 || true
+su-exec "$AMULE_USER" python3 - "$CONFIG_DIR/amuleapi.conf" <<'PY'
+import re
+import sys
+
+path = sys.argv[1]
+content = open(path).read()
+content = re.sub(r"^BindAddress=.*$", "BindAddress=127.0.0.1", content, flags=re.MULTILINE)
+content = re.sub(r"^Port=.*$", "Port=4713", content, count=1, flags=re.MULTILINE)
+open(path, "w").write(content)
+PY
+chown "$AMULE_USER:$AMULE_USER" "$CONFIG_DIR/amule.conf" "$CONFIG_DIR/amuleapi.conf"
+chmod 600 "$CONFIG_DIR/amule.conf" "$CONFIG_DIR/amuleapi.conf"
+
+cat >/run/amulio.env <<EOF
+AMULIO_PUBLIC_URL=$PUBLIC_URL
+AMULIO_INSTALL_TOKEN=$INSTALL_TOKEN
+AMULIO_TOKEN_SECRET=$TOKEN_SECRET
+AMULE_API_BASE_URL=http://127.0.0.1:4713/api/v0
+AMULE_API_ADMIN_PASSWORD_FILE=$SECRET_DIR/amuleapi_admin_password
+AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming
+AMULIO_DATABASE_PATH=/data/amulio/amulio.sqlite3
+AMULIO_PREFERRED_LANGUAGES=$PREFERRED_LANGUAGES
+AMULIO_ALLOW_SEASON_PACKS=$ALLOW_SEASON_PACKS
+EOF
+chmod 600 /run/amulio.env
+
+cleanup() {
+    kill "${AMULIO_PID:-}" "${AMULEAPI_PID:-}" "${AMULED_PID:-}" 2>/dev/null || true
+    wait "${AMULIO_PID:-}" "${AMULEAPI_PID:-}" "${AMULED_PID:-}" 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
+
+su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o >"$CONFIG_DIR/amuled.log" 2>&1 &
+AMULED_PID=$!
+for _ in $(seq 1 30); do
+    if (echo >/dev/tcp/127.0.0.1/4712) 2>/dev/null; then
+        break
+    fi
+    sleep 1
+done
+if ! (echo >/dev/tcp/127.0.0.1/4712) 2>/dev/null; then
+    echo 'amuled EC service did not become ready' >&2
+    exit 1
+fi
+
+su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --host=127.0.0.1 --port=4712 \
+    --password="$EC_PASSWORD" --http-port=4713 --bind=127.0.0.1 --no-log-file &
+AMULEAPI_PID=$!
+
+set -a
+# shellcheck disable=SC1091
+source /run/amulio.env
+set +a
+uvicorn amulio.app:app --host 0.0.0.0 --port 8000 &
+AMULIO_PID=$!
+
+wait -n "$AMULED_PID" "$AMULEAPI_PID" "$AMULIO_PID"
+echo 'aMulio runtime process stopped unexpectedly' >&2
+exit 1
