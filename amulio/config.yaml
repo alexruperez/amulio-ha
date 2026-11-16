@@ -1,0 +1,45 @@
+name: aMulio
+version: "0.1.0"
+slug: amulio
+description: Self-hosted aMule node and private Stremio addon
+url: https://github.com/alexruperez/amulio-ha/tree/main/amulio
+arch:
+  - amd64
+  - aarch64
+stage: experimental
+startup: application
+boot: manual
+init: true
+ingress: true
+ingress_port: 8000
+panel_icon: mdi:download-network
+panel_title: aMulio
+panel_admin: true
+ports:
+  8000/tcp: null
+  4662/tcp: null
+  4672/udp: null
+ports_description:
+  8000/tcp: Stremio addon and playback endpoint (LAN/public origin only)
+  4662/tcp: Optional aMule eD2K peer TCP port
+  4672/udp: Optional aMule Kad UDP port
+watchdog: http://[HOST]:[PORT:8000]/health
+map:
+  - type: data
+    path: /data
+backup: hot
+backup_exclude:
+  - temp/*
+  - config/amuled.log
+options:
+  public_url: http://homeassistant.local:8000
+  peer_tcp_port: 4662
+  peer_udp_port: 4672
+  preferred_languages: en,es
+  allow_season_packs: false
+schema:
+  public_url: url
+  peer_tcp_port: port
+  peer_udp_port: port
+  preferred_languages: str
+  allow_season_packs: bool
