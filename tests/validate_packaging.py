@@ -35,6 +35,8 @@ def main() -> None:
     assert "starting runtime bootstrap" in runner
     assert "waiting for aMule EC on 127.0.0.1:4712" in runner
     assert "starting aMulio HTTP API on 0.0.0.0:8000" in runner
+    assert 'jq -er "$1" "$OPTIONS_FILE"' not in runner
+    assert 'value=$(jq -r "$1" "$OPTIONS_FILE")' in runner
     assert '>/dev/null 2>&1 || true' not in runner.split('if [[ ! -f "$CONFIG_DIR/amule.conf" ]]', 1)[1].split('EC_PASSWORD_MD5=', 1)[0]
 
     service = SERVICE.read_text()
