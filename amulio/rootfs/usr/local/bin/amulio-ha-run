@@ -7,6 +7,18 @@ readonly SECRET_DIR=/data/secrets
 readonly OPTIONS_FILE=/data/options.json
 readonly AMULE_USER=amule
 
+log() {
+    printf '%s [amulio] %s\n' "$(date -Iseconds)" "$*" >&2
+}
+
+on_error() {
+    local status=$?
+    log "ERROR: startup command failed at line $1 (exit $status)"
+    exit "$status"
+}
+
+trap 'on_error $LINENO' ERR
+
 option() {
     jq -er "$1" "$OPTIONS_FILE"
 }
@@ -27,6 +39,7 @@ PY
     cat "$path"
 }
 
+log 'starting runtime bootstrap'
 PUBLIC_URL=$(option '.public_url')
 TCP_PORT=$(option '.peer_tcp_port')
 UDP_PORT=$(option '.peer_udp_port')
@@ -43,10 +56,20 @@ TOKEN_SECRET=$(secret token_secret)
 EC_PASSWORD=$(secret amule_ec_password)
 API_ADMIN_PASSWORD=$(secret amuleapi_admin_password)
 
+log 'preparing persistent directories and aMule configuration'
 install -d -o "$AMULE_USER" -g "$AMULE_USER" -m 700 \
     "$CONFIG_DIR" /data/incoming /data/temp /data/amulio "$SECRET_DIR"
 if [[ ! -f "$CONFIG_DIR/amule.conf" ]]; then
-    su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o -i >/dev/null 2>&1 || true
+    log 'initializing aMule default configuration'
+    # The first foreground invocation writes the default config, then exits
+    # because EC is not configured yet. Its non-zero status is expected only
+    # while bootstrapping; require the generated file before continuing.
+    su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o -i \
+        >"$CONFIG_DIR/initialization.log" 2>&1 || true
+    if [[ ! -s "$CONFIG_DIR/amule.conf" ]]; then
+        log 'ERROR: aMule did not create amule.conf; see /data/config/initialization.log'
+        exit 1
+    fi
 fi
 
 EC_PASSWORD_MD5=$(printf '%s' "$EC_PASSWORD" | md5sum | cut -d' ' -f1 | tr 'a-f' 'A-F')
@@ -72,9 +95,14 @@ for key, value in (
 open(path, "w").write(content)
 PY
 
+log 'configuring the private aMule REST API'
 su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --set-admin-pass="$API_ADMIN_PASSWORD"
 timeout 3 su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --password="$EC_PASSWORD" \
     --port=4712 --http-port=4713 >/dev/null 2>&1 || true
+if [[ ! -s "$CONFIG_DIR/amuleapi.conf" ]]; then
+    log 'ERROR: amuleapi did not create amuleapi.conf'
+    exit 1
+fi
 su-exec "$AMULE_USER" python3 - "$CONFIG_DIR/amuleapi.conf" <<'PY'
 import re
 import sys
@@ -109,6 +137,7 @@ trap cleanup EXIT INT TERM
 
 su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o >"$CONFIG_DIR/amuled.log" 2>&1 &
 AMULED_PID=$!
+log 'waiting for aMule EC on 127.0.0.1:4712'
 for _ in $(seq 1 30); do
     if (echo >/dev/tcp/127.0.0.1/4712) 2>/dev/null; then
         break
@@ -116,10 +145,11 @@ for _ in $(seq 1 30); do
     sleep 1
 done
 if ! (echo >/dev/tcp/127.0.0.1/4712) 2>/dev/null; then
-    echo 'amuled EC service did not become ready' >&2
+    log 'ERROR: amuled EC service did not become ready; see /data/config/amuled.log'
     exit 1
 fi
 
+log 'starting loopback-only amuleapi on 127.0.0.1:4713'
 su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --host=127.0.0.1 --port=4712 \
     --password="$EC_PASSWORD" --http-port=4713 --bind=127.0.0.1 --no-log-file &
 AMULEAPI_PID=$!
@@ -128,6 +158,7 @@ set -a
 # shellcheck disable=SC1091
 source /run/amulio.env
 set +a
+log 'starting aMulio HTTP API on 0.0.0.0:8000'
 uvicorn amulio.app:app --host 0.0.0.0 --port 8000 &
 AMULIO_PID=$!
 

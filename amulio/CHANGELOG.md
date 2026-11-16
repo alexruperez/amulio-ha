@@ -1,3 +1,8 @@
+## 0.1.1
+
+- Make runtime bootstrap failures visible in app logs and fail explicitly when aMule configuration cannot be generated.
+- Add start-phase diagnostics for aMule EC, loopback-only amuleapi, and the aMulio HTTP API.
+
 ## 0.1.0
 
 - First experimental Home Assistant OS app release.
