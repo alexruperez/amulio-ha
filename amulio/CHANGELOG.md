@@ -1,3 +1,7 @@
+## 0.1.6
+
+- Replace the temporary original aMulio artwork with the official unmodified aMule application icon, with GPL-2.0-or-later attribution and license notice.
+
 ## 0.1.5
 
 - Add original aMulio icon and logo assets for the Home Assistant app store and app page.
