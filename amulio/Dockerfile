@@ -64,6 +64,8 @@ ENV PATH="/opt/venv/bin:/opt/amule/bin:$PATH" \
     LD_LIBRARY_PATH="/opt/wx/lib" \
     PYTHONPATH="/app/src" \
     PYTHONUNBUFFERED=1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+    CMD python3 -c 'import urllib.request; urllib.request.urlopen("http://127.0.0.1:8000/health")'
 LABEL \
     org.opencontainers.image.title="Home Assistant App: aMulio" \
     org.opencontainers.image.description="Self-hosted aMule node and private Stremio addon" \

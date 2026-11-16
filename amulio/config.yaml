@@ -10,14 +10,12 @@ arch:
   - amd64
 homeassistant: "2026.2.0"
 stage: experimental
-startup: application
 boot: manual
 init: false
 ingress: true
 ingress_port: 8000
 panel_icon: mdi:download-network
 panel_title: aMulio
-panel_admin: true
 ports:
   8000/tcp: null
   4662/tcp: null
@@ -26,8 +24,6 @@ ports_description:
   8000/tcp: Stremio addon and playback endpoint (LAN/public origin only)
   4662/tcp: Optional aMule eD2K peer TCP port
   4672/udp: Optional aMule Kad UDP port
-watchdog: http://[HOST]:[PORT:8000]/health
-backup: hot
 backup_exclude:
   - temp/*
   - config/amuled.log

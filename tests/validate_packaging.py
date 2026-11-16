@@ -42,6 +42,7 @@ def main() -> None:
     assert "COPY rootfs /" in dockerfile
     assert "org.opencontainers.image.title=\"Home Assistant App: aMulio\"" in dockerfile
     assert "ENTRYPOINT" not in dockerfile
+    assert "HEALTHCHECK" in dockerfile
 
     for name in ("DOCS.md", "CHANGELOG.md", "translations/en.yaml", "translations/es.yaml"):
         assert (APP / name).is_file(), name
