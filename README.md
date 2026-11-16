@@ -1,6 +1,6 @@
 # aMulio Home Assistant app
 
-This repository packages [aMulio](https://github.com/alexruperez/amulio) as a Home Assistant OS app.
+This repository packages [aMulio](https://github.com/alexruperez/amulio) as a Home Assistant OS app. The portable aMulio application and its Docker reference deployment live in the [main aMulio repository](https://github.com/alexruperez/amulio).
 
 ## Product contract
 
