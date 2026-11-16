@@ -61,6 +61,8 @@ def main() -> None:
         assert (APP / name).is_file(), name
     assert (APP / "icon.png").is_file()
     assert (APP / "logo.png").is_file()
+    assert (ROOT / "THIRD_PARTY_NOTICES.md").is_file()
+    assert (ROOT / "THIRD_PARTY_LICENSES_amule_GPL-2.0-or-later.md").is_file()
     print("HAOS app packaging contract: valid")
 
 
