@@ -31,6 +31,11 @@ def main() -> None:
     assert "--bind=127.0.0.1" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/temp" not in runner
+    assert "trap 'on_error $LINENO' ERR" in runner
+    assert "starting runtime bootstrap" in runner
+    assert "waiting for aMule EC on 127.0.0.1:4712" in runner
+    assert "starting aMulio HTTP API on 0.0.0.0:8000" in runner
+    assert '>/dev/null 2>&1 || true' not in runner.split('if [[ ! -f "$CONFIG_DIR/amule.conf" ]]', 1)[1].split('EC_PASSWORD_MD5=', 1)[0]
 
     service = SERVICE.read_text()
     assert service.startswith("#!/usr/bin/with-contenv bashio")
