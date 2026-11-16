@@ -1,3 +1,7 @@
+## 0.1.4
+
+- Include Alpine's `libpcre2-32` runtime dependency required by the wxWidgets build used by aMule.
+
 ## 0.1.3
 
 - Set a writable aMule home directory before first-run configuration creation and include the bounded bootstrap log when that creation fails.
