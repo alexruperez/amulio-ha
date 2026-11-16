@@ -33,6 +33,8 @@ def main() -> None:
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/temp" not in runner
     assert "trap 'on_error $LINENO' ERR" in runner
     assert "starting runtime bootstrap" in runner
+    assert 'export HOME="$AMULE_HOME"' in runner
+    assert 'export XDG_CONFIG_HOME="$AMULE_HOME/.config"' in runner
     assert "waiting for aMule EC on 127.0.0.1:4712" in runner
     assert "starting aMulio HTTP API on 0.0.0.0:8000" in runner
     assert 'jq -er "$1" "$OPTIONS_FILE"' not in runner
