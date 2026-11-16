@@ -5,7 +5,7 @@ FROM ${BUILD_FROM} AS amule-builder
 ARG AMULE_REF=7958b6926910b1f59b477b146bcf8882139f9558
 ARG WX_REF=5ff25322553c1870cf20a2e1ba6f20ed50d9fe9a
 RUN apk add --no-cache \
-    build-base ca-certificates cmake git boost-dev cryptopp-dev curl-dev \
+    build-base ca-certificates cmake git boost-dev crypto++-dev curl-dev \
     glib-dev gtk+3.0-dev pkgconf zlib-dev
 WORKDIR /build
 RUN git clone https://github.com/wxWidgets/wxWidgets.git wxwidgets \
@@ -49,7 +49,7 @@ RUN uv sync --locked --no-dev --no-editable
 
 FROM ${BUILD_FROM}
 RUN apk add --no-cache \
-    ca-certificates coreutils libcrypto++ libcurl libgcc glib gtk+3.0 libstdc++ \
+    ca-certificates coreutils crypto++ libcurl libgcc glib gtk+3.0 libstdc++ \
     pcre2 python3 su-exec jq \
     && adduser -D -u 10001 -h /var/lib/amule amule
 COPY --from=amule-builder /opt/wx /opt/wx
