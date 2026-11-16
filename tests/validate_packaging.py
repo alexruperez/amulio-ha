@@ -20,6 +20,7 @@ def main() -> None:
     assert config["init"] is False
     assert config["ingress"] is True
     assert config["ingress_port"] == 8000
+    assert "webui" not in config
     assert config["image"] == "ghcr.io/alexruperez/amulio-ha"
     assert all(port is None for port in config["ports"].values())
     assert config["options"]["public_url"].startswith("http")
@@ -58,6 +59,8 @@ def main() -> None:
 
     for name in ("DOCS.md", "CHANGELOG.md", "translations/en.yaml", "translations/es.yaml"):
         assert (APP / name).is_file(), name
+    assert (APP / "icon.png").is_file()
+    assert (APP / "logo.png").is_file()
     print("HAOS app packaging contract: valid")
 
 

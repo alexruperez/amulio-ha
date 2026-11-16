@@ -1,3 +1,7 @@
+## 0.1.5
+
+- Add original aMulio icon and logo assets for the Home Assistant app store and app page.
+
 ## 0.1.4
 
 - Include Alpine's `libpcre2-32` runtime dependency required by the wxWidgets build used by aMule.
