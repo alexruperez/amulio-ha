@@ -1,0 +1,3 @@
+#!/usr/bin/with-contenv bashio
+# S6 keeps this service alive and exposes its stdout/stderr in the App log.
+exec /usr/local/bin/amulio-ha-run

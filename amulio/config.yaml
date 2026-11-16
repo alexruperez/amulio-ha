@@ -1,15 +1,18 @@
+# https://contributors.home-assistant.io/apps/reference/configuration/
 name: aMulio
 version: "0.1.0"
 slug: amulio
 description: Self-hosted aMule node and private Stremio addon
-url: https://github.com/alexruperez/amulio-ha/tree/main/amulio
+url: "https://github.com/alexruperez/amulio-ha/tree/main/amulio"
+image: "ghcr.io/alexruperez/amulio-ha"
 arch:
-  - amd64
   - aarch64
+  - amd64
+homeassistant: "2026.2.0"
 stage: experimental
 startup: application
 boot: manual
-init: true
+init: false
 ingress: true
 ingress_port: 8000
 panel_icon: mdi:download-network
@@ -24,9 +27,6 @@ ports_description:
   4662/tcp: Optional aMule eD2K peer TCP port
   4672/udp: Optional aMule Kad UDP port
 watchdog: http://[HOST]:[PORT:8000]/health
-map:
-  - type: data
-    path: /data
 backup: hot
 backup_exclude:
   - temp/*

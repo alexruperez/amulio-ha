@@ -46,11 +46,11 @@ API_ADMIN_PASSWORD=$(secret amuleapi_admin_password)
 install -d -o "$AMULE_USER" -g "$AMULE_USER" -m 700 \
     "$CONFIG_DIR" /data/incoming /data/temp /data/amulio "$SECRET_DIR"
 if [[ ! -f "$CONFIG_DIR/amule.conf" ]]; then
-    gosu "$AMULE_USER" amuled -c "$CONFIG_DIR" -o -i >/dev/null 2>&1 || true
+    su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o -i >/dev/null 2>&1 || true
 fi
 
 EC_PASSWORD_MD5=$(printf '%s' "$EC_PASSWORD" | md5sum | cut -d' ' -f1 | tr 'a-f' 'A-F')
-gosu "$AMULE_USER" python3 - "$CONFIG_DIR/amule.conf" "$EC_PASSWORD_MD5" "$TCP_PORT" "$UDP_PORT" <<'PY'
+su-exec "$AMULE_USER" python3 - "$CONFIG_DIR/amule.conf" "$EC_PASSWORD_MD5" "$TCP_PORT" "$UDP_PORT" <<'PY'
 import re
 import sys
 
@@ -72,10 +72,10 @@ for key, value in (
 open(path, "w").write(content)
 PY
 
-gosu "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --set-admin-pass="$API_ADMIN_PASSWORD"
-timeout 3 gosu "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --password="$EC_PASSWORD" \
+su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --set-admin-pass="$API_ADMIN_PASSWORD"
+timeout 3 su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --password="$EC_PASSWORD" \
     --port=4712 --http-port=4713 >/dev/null 2>&1 || true
-gosu "$AMULE_USER" python3 - "$CONFIG_DIR/amuleapi.conf" <<'PY'
+su-exec "$AMULE_USER" python3 - "$CONFIG_DIR/amuleapi.conf" <<'PY'
 import re
 import sys
 
@@ -107,7 +107,7 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-gosu "$AMULE_USER" amuled -c "$CONFIG_DIR" -o >"$CONFIG_DIR/amuled.log" 2>&1 &
+su-exec "$AMULE_USER" amuled -c "$CONFIG_DIR" -o >"$CONFIG_DIR/amuled.log" 2>&1 &
 AMULED_PID=$!
 for _ in $(seq 1 30); do
     if (echo >/dev/tcp/127.0.0.1/4712) 2>/dev/null; then
@@ -120,7 +120,7 @@ if ! (echo >/dev/tcp/127.0.0.1/4712) 2>/dev/null; then
     exit 1
 fi
 
-gosu "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --host=127.0.0.1 --port=4712 \
+su-exec "$AMULE_USER" amuleapi --config-dir="$CONFIG_DIR" --host=127.0.0.1 --port=4712 \
     --password="$EC_PASSWORD" --http-port=4713 --bind=127.0.0.1 --no-log-file &
 AMULEAPI_PID=$!
 

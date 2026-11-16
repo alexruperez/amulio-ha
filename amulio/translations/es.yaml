@@ -1,0 +1,20 @@
+configuration:
+  public_url:
+    name: URL pública para Stremio
+    description: Origen LAN o HTTPS alcanzable que se usa en los manifests y enlaces de reproducción de Stremio. No uses la URL de Ingress de Home Assistant.
+  peer_tcp_port:
+    name: Puerto TCP de pares aMule
+    description: Listener TCP para conectividad de pares eD2K. Activa su puerto de red por separado si quieres aceptar pares entrantes.
+  peer_udp_port:
+    name: Puerto UDP Kad
+    description: Listener UDP para conectividad Kad. Activa su puerto de red por separado si quieres aceptar pares entrantes.
+  preferred_languages:
+    name: Idiomas de metadatos preferidos
+    description: Códigos de idioma separados por comas, por ejemplo en,es.
+  allow_season_packs:
+    name: Permitir packs de temporada
+    description: Incluye packs de temporada de series entre los candidatos de descarga.
+network:
+  8000/tcp: Endpoint del addon y reproducción Stremio. Actívalo solo si los clientes pueden alcanzar la URL pública configurada.
+  4662/tcp: Puerto TCP opcional de pares eD2K de aMule.
+  4672/udp: Puerto UDP Kad opcional de aMule.
