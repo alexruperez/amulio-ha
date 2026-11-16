@@ -6,6 +6,12 @@ readonly CONFIG_DIR=/data/config
 readonly SECRET_DIR=/data/secrets
 readonly OPTIONS_FILE=/data/options.json
 readonly AMULE_USER=amule
+readonly AMULE_HOME=/var/lib/amule
+
+# su-exec changes uid/gid but retains the parent's environment. aMule needs a
+# writable home directory on its first run even when --config-dir is supplied.
+export HOME="$AMULE_HOME"
+export XDG_CONFIG_HOME="$AMULE_HOME/.config"
 
 log() {
     printf '%s [amulio] %s\n' "$(date -Iseconds)" "$*" >&2
@@ -74,6 +80,7 @@ if [[ ! -f "$CONFIG_DIR/amule.conf" ]]; then
         >"$CONFIG_DIR/initialization.log" 2>&1 || true
     if [[ ! -s "$CONFIG_DIR/amule.conf" ]]; then
         log 'ERROR: aMule did not create amule.conf; see /data/config/initialization.log'
+        tail -n 40 "$CONFIG_DIR/initialization.log" >&2 || true
         exit 1
     fi
 fi

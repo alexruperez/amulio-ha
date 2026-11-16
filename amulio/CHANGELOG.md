@@ -1,3 +1,7 @@
+## 0.1.3
+
+- Set a writable aMule home directory before first-run configuration creation and include the bounded bootstrap log when that creation fails.
+
 ## 0.1.2
 
 - Accept boolean `false` app options during bootstrap; Home Assistant serializes disabled options as JSON `false`, which must not be treated as a missing value.
