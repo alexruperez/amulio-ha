@@ -50,7 +50,7 @@ RUN uv sync --locked --no-dev --no-editable
 FROM ${BUILD_FROM}
 RUN apk add --no-cache \
     ca-certificates coreutils crypto++ libcurl libgcc glib gtk+3.0 libstdc++ \
-    pcre2 python3 su-exec jq \
+    libpcre2-32 pcre2 python3 su-exec jq \
     && adduser -D -u 10001 -h /var/lib/amule amule
 COPY --from=amule-builder /opt/wx /opt/wx
 COPY --from=amule-builder /opt/amule /opt/amule

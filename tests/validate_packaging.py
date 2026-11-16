@@ -51,6 +51,7 @@ def main() -> None:
     assert "COPY rootfs /" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
+    assert "libpcre2-32" in dockerfile
     assert "org.opencontainers.image.title=\"Home Assistant App: aMulio\"" in dockerfile
     assert "ENTRYPOINT" not in dockerfile
     assert "HEALTHCHECK" in dockerfile
