@@ -40,6 +40,8 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
+    assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
+    assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "org.opencontainers.image.title=\"Home Assistant App: aMulio\"" in dockerfile
     assert "ENTRYPOINT" not in dockerfile
     assert "HEALTHCHECK" in dockerfile

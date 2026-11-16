@@ -26,7 +26,7 @@ RUN git clone https://github.com/amule-org/amule.git amule \
        -DBUILD_DAEMON=YES \
        -DBUILD_AMULEAPI=YES \
        -DBUILD_ED2K=NO \
-       -DCRYPTOPP_INCLUDE_PREFIX=crypto++ \
+       -DCRYPTOPP_INCLUDE_PREFIX=cryptopp \
        -DENABLE_NLS=NO \
        -DENABLE_UPNP=NO \
        -DENABLE_IP2COUNTRY=NO \
