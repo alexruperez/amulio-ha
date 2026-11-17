@@ -1,3 +1,8 @@
+## 0.1.13
+
+- Trust the actual container default gateway used by Home Assistant Ingress, discovered at runtime from `/proc/net/route`, in addition to the resolved Supervisor service address.
+- Keep the trusted-proxy allowlist narrow and runtime-derived; do not assume a static Home Assistant network address.
+
 ## 0.1.12
 
 - Use Home Assistant Ingress SSO for the download manager only after resolving the runtime Supervisor address and configuring it as a trusted proxy source.

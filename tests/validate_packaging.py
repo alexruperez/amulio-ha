@@ -15,7 +15,7 @@ def main() -> None:
     required = {"name", "version", "slug", "description", "image", "arch", "options", "schema"}
     assert required <= config.keys()
     assert config["slug"] == APP.name
-    assert config["version"] == "0.1.12"
+    assert config["version"] == "0.1.13"
     assert config["arch"] == ["aarch64", "amd64"]
     assert config["homeassistant"] >= "2026.2.0"
     assert config["init"] is False
@@ -34,6 +34,8 @@ def main() -> None:
     assert "AMULE_API_BASE_URL=http://127.0.0.1:4713/api/v0" in runner
     assert "AMULE_API_ADMIN_PASSWORD_FILE=$SECRET_DIR/amuleapi_admin_password" in runner
     assert 'socket.getaddrinfo("supervisor", None, type=socket.SOCK_STREAM)' in runner
+    assert 'open("/proc/net/route")' in runner
+    assert 'fields[1] == "00000000"' in runner
     assert "AMULIO_TRUSTED_INGRESS_PROXY_SOURCES=$SUPERVISOR_PROXY_SOURCES" in runner
     assert "Supervisor hostname did not resolve" in runner
     assert "ensure_secret manager_admin_password" in runner
