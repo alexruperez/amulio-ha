@@ -49,6 +49,16 @@ import socket
 addresses = set()
 for result in socket.getaddrinfo("supervisor", None, type=socket.SOCK_STREAM):
     addresses.add(result[4][0])
+
+# The Supervisor API resolves to its service IP. Ingress itself reaches an app
+# through the container's actual default gateway. Read that gateway from the
+# runtime route table rather than assuming a fixed Docker-network address.
+for line in open("/proc/net/route").read().splitlines()[1:]:
+    fields = line.split()
+    if len(fields) >= 3 and fields[1] == "00000000":
+        gateway = socket.inet_ntoa(bytes.fromhex(fields[2])[::-1])
+        addresses.add(gateway)
+
 print(",".join(
     f"{address}/{ipaddress.ip_address(address).max_prefixlen}"
     for address in sorted(addresses, key=ipaddress.ip_address)
