@@ -1,3 +1,7 @@
+## 0.1.15
+
+- Keep manager API requests under the per-app Home Assistant Ingress prefix; the previous parent-relative paths escaped it before reaching aMulio.
+
 ## 0.1.14
 
 - Scope the manager session cookie to the trusted Home Assistant Ingress prefix so browsers retain it through the app proxy.
