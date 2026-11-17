@@ -1,3 +1,7 @@
+## 0.1.10
+
+- Update aMulio to support Stremio's `HEAD` playback probes without queuing an incomplete download.
+
 ## 0.1.9
 
 - Add Supervisor options for global Stremio manifest limits and stream display preferences.
