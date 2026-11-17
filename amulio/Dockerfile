@@ -35,7 +35,7 @@ RUN git clone https://github.com/amule-org/amule.git amule \
 
 FROM ${BUILD_FROM} AS amulio-builder
 COPY --from=ghcr.io/astral-sh/uv:0.9.25 /uv /usr/local/bin/uv
-ARG AMULIO_REF=9940c2fe9352dcb5e0c3618404db70685fc7eb45
+ARG AMULIO_REF=2e70da8851785c6a1dfbe84077c52597ecf1a50a
 ENV UV_PYTHON_DOWNLOADS=never \
     UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \

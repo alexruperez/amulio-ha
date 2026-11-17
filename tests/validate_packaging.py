@@ -31,6 +31,7 @@ def main() -> None:
     assert "AMULE_API_ADMIN_PASSWORD_FILE=$SECRET_DIR/amuleapi_admin_password" in runner
     assert "--bind=127.0.0.1" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming" in runner
+    assert "AMULIO_INBOUND_PEER_PORTS_ENABLED=false" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/temp" not in runner
     assert "trap 'on_error $LINENO' ERR" in runner
     assert "starting runtime bootstrap" in runner
@@ -50,7 +51,7 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
-    assert "ARG AMULIO_REF=9940c2fe9352dcb5e0c3618404db70685fc7eb45" in dockerfile
+    assert "ARG AMULIO_REF=2e70da8851785c6a1dfbe84077c52597ecf1a50a" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "libpcre2-32" in dockerfile

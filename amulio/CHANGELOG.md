@@ -1,3 +1,9 @@
+## 0.1.8
+
+- Update the pinned aMulio core revision to keep configuration assets inside the Home Assistant Ingress prefix.
+- Show the expected limited inbound peer reachability when optional peer ports are not exposed, including Low ID and firewalled Kad guidance.
+- Hide optional profile management when it has not been explicitly enabled.
+
 ## 0.1.7
 
 - Update the pinned aMulio core revision to preserve the Home Assistant Ingress prefix when opening the configuration interface.
