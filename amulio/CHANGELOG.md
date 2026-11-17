@@ -1,3 +1,7 @@
+## 0.1.7
+
+- Update the pinned aMulio core revision to preserve the Home Assistant Ingress prefix when opening the configuration interface.
+
 ## 0.1.6
 
 - Replace the temporary original aMulio artwork with the official unmodified aMule application icon, with GPL-2.0-or-later attribution and license notice.
