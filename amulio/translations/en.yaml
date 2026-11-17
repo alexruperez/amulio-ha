@@ -14,6 +14,27 @@ configuration:
   allow_season_packs:
     name: Allow season packs
     description: Include TV season packs in matching download candidates.
+  max_results:
+    name: Maximum results
+    description: Maximum number of candidates aMulio returns to Stremio per search.
+  max_file_size_gb:
+    name: Maximum file size (GB)
+    description: Exclude candidates above this size. Use 0 for no limit.
+  show_stream_size:
+    name: Show file size
+    description: Include file size in Stremio playback choices.
+  show_stream_sources:
+    name: Show source availability
+    description: Include known sources or download availability in Stremio.
+  show_stream_language:
+    name: Show detected language
+    description: Include the detected language in Stremio playback choices.
+  show_stream_technical_details:
+    name: Show codec, HDR and release group
+    description: Include file technical details in Stremio playback choices.
+  inbound_peer_ports_enabled:
+    name: Inbound peers enabled
+    description: Enable only after mapping both 4662/tcp and 4672/udp in Network. Otherwise Low ID and firewalled Kad are expected.
 network:
   8000/tcp: Stremio addon and playback endpoint. Enable only when clients can reach the configured public URL.
   4662/tcp: Optional aMule eD2K peer TCP port.

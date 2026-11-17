@@ -24,6 +24,9 @@ def main() -> None:
     assert config["image"] == "ghcr.io/alexruperez/amulio-ha"
     assert all(port is None for port in config["ports"].values())
     assert config["options"]["public_url"].startswith("http")
+    assert config["options"]["max_file_size_gb"] == 0
+    assert config["options"]["inbound_peer_ports_enabled"] is False
+    assert set(config["options"]) == set(config["schema"])
     assert not {"docker_api", "homeassistant_api", "hassio_api", "host_network", "host_pid"} & config.keys()
 
     runner = RUNNER.read_text()
@@ -31,7 +34,9 @@ def main() -> None:
     assert "AMULE_API_ADMIN_PASSWORD_FILE=$SECRET_DIR/amuleapi_admin_password" in runner
     assert "--bind=127.0.0.1" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming" in runner
-    assert "AMULIO_INBOUND_PEER_PORTS_ENABLED=false" in runner
+    assert "AMULIO_INBOUND_PEER_PORTS_ENABLED=$INBOUND_PEER_PORTS_ENABLED" in runner
+    assert "AMULIO_DEFAULT_RESULT_LIMIT=$MAX_RESULTS" in runner
+    assert "AMULIO_DEFAULT_MAX_SIZE_GB=$MAX_FILE_SIZE_GB" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/temp" not in runner
     assert "trap 'on_error $LINENO' ERR" in runner
     assert "starting runtime bootstrap" in runner
@@ -51,7 +56,7 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
-    assert "ARG AMULIO_REF=2e70da8851785c6a1dfbe84077c52597ecf1a50a" in dockerfile
+    assert "ARG AMULIO_REF=d6ae01ad54bb12d205d39549e5352f1a95a6a684" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "libpcre2-32" in dockerfile

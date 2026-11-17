@@ -1,3 +1,9 @@
+## 0.1.9
+
+- Add Supervisor options for global Stremio manifest limits and stream display preferences.
+- Add an explicit inbound-peer setting; enable it only after mapping both optional eD2K and Kad ports in Home Assistant.
+- Clarify that opening Stremio is a platform-dependent deep link and mobile clients require an HTTPS public URL.
+
 ## 0.1.8
 
 - Update the pinned aMulio core revision to keep configuration assets inside the Home Assistant Ingress prefix.
