@@ -1,3 +1,9 @@
+## 0.1.14
+
+- Scope the manager session cookie to the trusted Home Assistant Ingress prefix so browsers retain it through the app proxy.
+- Use relative readiness status checks under Ingress, avoiding an unnecessary public-proxy round trip.
+- Refine the Download manager section with clearer hierarchy and spacing.
+
 ## 0.1.13
 
 - Trust the actual container default gateway used by Home Assistant Ingress, discovered at runtime from `/proc/net/route`, in addition to the resolved Supervisor service address.
