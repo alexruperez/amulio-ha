@@ -32,20 +32,21 @@ Hot backups exclude incomplete downloads and logs. They do include completed med
 
 ## Network and security
 
-Ingress is only the administrative UI. Open the app's **aMulio** entry in Home
-Assistant to reach `/configure` and the admin-manager action; it does not depend
-on detecting Ingress headers. Stremio must reach `public_url` independently,
-because it does not have an authenticated Ingress session. EC and amuleapi bind
-to loopback inside the container and are never host-published.
+Ingress is the administrative UI. Open the app's **aMulio** entry in Home
+Assistant to reach `/configure` and select **Open download manager**. At startup
+the wrapper resolves the `supervisor` hostname and passes only the resolved
+IP/CIDR values to aMulio as trusted proxy sources. A session is created only
+when that peer supplies Home Assistant's `X-Remote-User-ID`; direct/public
+requests cannot use that header. The session remains HttpOnly,
+SameSite=Strict, and CSRF-protected.
 
-On first boot the app creates `manager_admin_password` and
-`manager_bootstrap_token` in `/data/secrets` with mode `0600`. The latter is for
-a private operator management link only: append it locally as
-`#admin-bootstrap=<token>` to the Ingress `/configure` URL, then choose **Open
-admin manager**. URL fragments are not transmitted in HTTP requests or referrer
-headers; the page posts the token to the rate-limited bootstrap endpoint and
-clears the fragment. Keep that link private and never place the token in a query
-string, app option, log, or manifest.
+When Supervisor resolution succeeds, the app does not generate a manager
+password or bootstrap token, and no manager secret is exposed in the UI, app
+options, logs, or manifest. If resolution fails, the wrapper deliberately does
+not guess a static proxy address and preserves the generic file-only recovery
+flow instead. Stremio must reach `public_url` independently because it does not
+have an authenticated Ingress session. EC and amuleapi bind to loopback inside
+the container and are never host-published.
 
 Peer ports are disabled by default. Without them, aMule can run with Low ID/firewalled Kad and reduced reachability. This app never moves downloads to another aMulio node or a central VPS.
 
