@@ -1,6 +1,6 @@
 # https://contributors.home-assistant.io/apps/reference/configuration/
 name: aMulio
-version: "0.1.8"
+version: "0.1.9"
 slug: amulio
 description: Self-hosted aMule node and private Stremio addon
 url: "https://github.com/alexruperez/amulio-ha/tree/main/amulio"
@@ -33,9 +33,23 @@ options:
   peer_udp_port: 4672
   preferred_languages: en,es
   allow_season_packs: false
+  max_results: 50
+  max_file_size_gb: 0
+  show_stream_size: true
+  show_stream_sources: true
+  show_stream_language: true
+  show_stream_technical_details: true
+  inbound_peer_ports_enabled: false
 schema:
   public_url: url
   peer_tcp_port: port
   peer_udp_port: port
   preferred_languages: str
   allow_season_packs: bool
+  max_results: int(1,50)
+  max_file_size_gb: float(0,100)
+  show_stream_size: bool
+  show_stream_sources: bool
+  show_stream_language: bool
+  show_stream_technical_details: bool
+  inbound_peer_ports_enabled: bool

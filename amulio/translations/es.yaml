@@ -14,6 +14,27 @@ configuration:
   allow_season_packs:
     name: Permitir packs de temporada
     description: Incluye packs de temporada de series entre los candidatos de descarga.
+  max_results:
+    name: Máximo de resultados
+    description: Número máximo de candidatos que aMulio entrega a Stremio por búsqueda.
+  max_file_size_gb:
+    name: Tamaño máximo de archivo (GB)
+    description: Descarta candidatos por encima de este tamaño. Usa 0 para no limitarlo.
+  show_stream_size:
+    name: Mostrar tamaño del archivo
+    description: Incluye el tamaño en las opciones de reproducción de Stremio.
+  show_stream_sources:
+    name: Mostrar disponibilidad de fuentes
+    description: Incluye fuentes conocidas o disponibilidad de descarga en Stremio.
+  show_stream_language:
+    name: Mostrar idioma detectado
+    description: Incluye el idioma detectado en las opciones de reproducción de Stremio.
+  show_stream_technical_details:
+    name: Mostrar códec, HDR y grupo de release
+    description: Incluye detalles técnicos del archivo en las opciones de reproducción de Stremio.
+  inbound_peer_ports_enabled:
+    name: Pares entrantes habilitados
+    description: Actívalo solo después de habilitar ambos mapeos de red 4662/tcp y 4672/udp. De lo contrario se espera Low ID y Kad con firewall.
 network:
   8000/tcp: Endpoint del addon y reproducción Stremio. Actívalo solo si los clientes pueden alcanzar la URL pública configurada.
   4662/tcp: Puerto TCP opcional de pares eD2K de aMule.
