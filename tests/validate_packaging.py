@@ -15,6 +15,7 @@ def main() -> None:
     required = {"name", "version", "slug", "description", "image", "arch", "options", "schema"}
     assert required <= config.keys()
     assert config["slug"] == APP.name
+    assert config["version"] == "0.1.12"
     assert config["arch"] == ["aarch64", "amd64"]
     assert config["homeassistant"] >= "2026.2.0"
     assert config["init"] is False
@@ -32,10 +33,11 @@ def main() -> None:
     runner = RUNNER.read_text()
     assert "AMULE_API_BASE_URL=http://127.0.0.1:4713/api/v0" in runner
     assert "AMULE_API_ADMIN_PASSWORD_FILE=$SECRET_DIR/amuleapi_admin_password" in runner
+    assert 'socket.getaddrinfo("supervisor", None, type=socket.SOCK_STREAM)' in runner
+    assert "AMULIO_TRUSTED_INGRESS_PROXY_SOURCES=$SUPERVISOR_PROXY_SOURCES" in runner
+    assert "Supervisor hostname did not resolve" in runner
     assert "ensure_secret manager_admin_password" in runner
     assert "ensure_secret manager_bootstrap_token" in runner
-    assert "AMULIO_ADMIN_PASSWORD_FILE=$SECRET_DIR/manager_admin_password" in runner
-    assert "AMULIO_ADMIN_BOOTSTRAP_TOKEN_FILE=$SECRET_DIR/manager_bootstrap_token" in runner
     assert 'chmod 600 "$path"' in runner
     assert "--bind=127.0.0.1" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming" in runner
@@ -61,7 +63,7 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
-    assert "ARG AMULIO_REF=728989984ad365b411ab40fa00c2637616b7305f" in dockerfile
+    assert "ARG AMULIO_REF=fad0b1f67707cf5b4bc6f6374112755876565ad3" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "libpcre2-32" in dockerfile

@@ -1,3 +1,9 @@
+## 0.1.12
+
+- Use Home Assistant Ingress SSO for the download manager only after resolving the runtime Supervisor address and configuring it as a trusted proxy source.
+- Do not generate or expose manager credentials when Supervisor resolution succeeds; retain the file-only generic recovery flow only if resolution fails.
+- Pin the image build to the exact core SSO commit.
+
 ## 0.1.11
 
 - Generate file-only admin-manager credentials and a fragment-only bootstrap link for the Home Assistant Ingress configuration page.
