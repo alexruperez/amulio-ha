@@ -1,3 +1,8 @@
+## 0.1.11
+
+- Generate file-only admin-manager credentials and a fragment-only bootstrap link for the Home Assistant Ingress configuration page.
+- Pin the image build to the aMulio admin bootstrap session support.
+
 ## 0.1.10
 
 - Update aMulio to support Stremio's `HEAD` playback probes without queuing an incomplete download.

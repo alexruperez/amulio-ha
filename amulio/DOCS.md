@@ -32,7 +32,20 @@ Hot backups exclude incomplete downloads and logs. They do include completed med
 
 ## Network and security
 
-Ingress is only the administrative UI. Stremio must reach `public_url` independently, because it does not have an authenticated Ingress session. EC and amuleapi bind to loopback inside the container and are never host-published.
+Ingress is only the administrative UI. Open the app's **aMulio** entry in Home
+Assistant to reach `/configure` and the admin-manager action; it does not depend
+on detecting Ingress headers. Stremio must reach `public_url` independently,
+because it does not have an authenticated Ingress session. EC and amuleapi bind
+to loopback inside the container and are never host-published.
+
+On first boot the app creates `manager_admin_password` and
+`manager_bootstrap_token` in `/data/secrets` with mode `0600`. The latter is for
+a private operator management link only: append it locally as
+`#admin-bootstrap=<token>` to the Ingress `/configure` URL, then choose **Open
+admin manager**. URL fragments are not transmitted in HTTP requests or referrer
+headers; the page posts the token to the rate-limited bootstrap endpoint and
+clears the fragment. Keep that link private and never place the token in a query
+string, app option, log, or manifest.
 
 Peer ports are disabled by default. Without them, aMule can run with Low ID/firewalled Kad and reduced reachability. This app never moves downloads to another aMulio node or a central VPS.
 

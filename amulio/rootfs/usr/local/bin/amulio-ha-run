@@ -37,6 +37,13 @@ option() {
 
 secret() {
     local name=$1 path="$SECRET_DIR/$1"
+    ensure_secret "$name"
+    cat "$path"
+}
+
+ensure_secret() {
+    local name=$1 path="$SECRET_DIR/$1"
+    install -d -m 700 "$SECRET_DIR"
     if [[ ! -s "$path" ]]; then
         python3 - "$path" <<'PY'
 import pathlib
@@ -48,7 +55,7 @@ path.write_text(secrets.token_urlsafe(48) + "\n")
 path.chmod(0o600)
 PY
     fi
-    cat "$path"
+    chmod 600 "$path"
 }
 
 log 'starting runtime bootstrap'
@@ -74,6 +81,9 @@ INSTALL_TOKEN=$(secret install_token)
 TOKEN_SECRET=$(secret token_secret)
 EC_PASSWORD=$(secret amule_ec_password)
 API_ADMIN_PASSWORD=$(secret amuleapi_admin_password)
+# These are file-only inputs to aMulio. Do not load them into shell variables or logs.
+ensure_secret manager_admin_password
+ensure_secret manager_bootstrap_token
 
 log 'preparing persistent directories and aMule configuration'
 install -d -o "$AMULE_USER" -g "$AMULE_USER" -m 700 \
@@ -140,6 +150,8 @@ cat >/run/amulio.env <<EOF
 AMULIO_PUBLIC_URL=$PUBLIC_URL
 AMULIO_INSTALL_TOKEN=$INSTALL_TOKEN
 AMULIO_TOKEN_SECRET=$TOKEN_SECRET
+AMULIO_ADMIN_PASSWORD_FILE=$SECRET_DIR/manager_admin_password
+AMULIO_ADMIN_BOOTSTRAP_TOKEN_FILE=$SECRET_DIR/manager_bootstrap_token
 AMULE_API_BASE_URL=http://127.0.0.1:4713/api/v0
 AMULE_API_ADMIN_PASSWORD_FILE=$SECRET_DIR/amuleapi_admin_password
 AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming
