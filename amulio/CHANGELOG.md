@@ -1,6 +1,10 @@
+## 0.1.17
+
+- Restore Home Assistant Ingress manager sessions at HTTP origins such as `http://homeassistant.local`: its `HttpOnly`/`SameSite=Strict` cookie remains scoped to the trusted per-app Ingress path but is no longer discarded for being `Secure` solely because the separate Stremio public URL uses HTTPS.
+
 ## 0.1.16
 
-- Pin the app image build to core commit `a0164f0669519ee568a6c9c6aa3ee4c1a0ade86b` for the mobile Download manager UX.
+- Pin the app image build to core commit `23c5a78eb7a7f088b556b9808974c1011bc00073` for the mobile Download manager UX.
 - Remove the redundant inbound-peer toggle. Optional `4662/tcp` and `4672/udp` mappings remain controlled only through the app Network page and do not establish router, NAT, or WAN reachability.
 
 ## 0.1.15
