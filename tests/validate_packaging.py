@@ -67,7 +67,7 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
-    assert "ARG AMULIO_REF=3c942aede24fc30df0a657d4751c1331d3411b35" in dockerfile
+    assert "ARG AMULIO_REF=23c5a78eb7a7f088b556b9808974c1011bc00073" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "libpcre2-32" in dockerfile
