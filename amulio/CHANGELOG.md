@@ -1,3 +1,8 @@
+## 0.1.21
+
+- Reconcile stale aMule shared-index entries after a completed-file deletion.
+- Keep completed-library deletion idempotent without weakening media-file safety checks.
+
 ## 0.1.20
 
 - Use the same standard confirmation dialog for cancelling active downloads as for deleting completed files.
