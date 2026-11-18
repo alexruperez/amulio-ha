@@ -1,3 +1,7 @@
+## 0.1.22
+
+- Refresh the open Ingress download manager automatically and show live transfer progress bars.
+
 ## 0.1.21
 
 - Reconcile stale aMule shared-index entries after a completed-file deletion.

@@ -15,7 +15,7 @@ def main() -> None:
     required = {"name", "version", "slug", "description", "image", "arch", "options", "schema"}
     assert required <= config.keys()
     assert config["slug"] == APP.name
-    assert config["version"] == "0.1.21"
+    assert config["version"] == "0.1.22"
     assert config["arch"] == ["aarch64", "amd64"]
     assert config["homeassistant"] >= "2026.2.0"
     assert config["init"] is False
@@ -67,7 +67,7 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
-    assert "ARG AMULIO_REF=f962900a956350140a9511fa6ee400396cc0d17a" in dockerfile
+    assert "ARG AMULIO_REF=8b64886b71bae101b02e8513e77cfadfb5d87a87" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "libpcre2-32" in dockerfile
