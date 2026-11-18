@@ -1,3 +1,7 @@
+## 0.1.18
+
+- Refine the Home Assistant Ingress Download manager after real-browser acceptance review: remove the non-actionable `Peers Unknown` tile, add spacing to the network status card, and show a readable library label while retaining the exact filename as technical detail.
+
 ## 0.1.17
 
 - Restore Home Assistant Ingress manager sessions at HTTP origins such as `http://homeassistant.local`: its `HttpOnly`/`SameSite=Strict` cookie remains scoped to the trusted per-app Ingress path but is no longer discarded for being `Secure` solely because the separate Stremio public URL uses HTTPS.
