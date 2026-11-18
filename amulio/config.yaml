@@ -1,6 +1,6 @@
 # https://contributors.home-assistant.io/apps/reference/configuration/
 name: aMulio
-version: "0.1.17"
+version: "0.1.18"
 slug: amulio
 description: Self-hosted aMule node and private Stremio addon
 url: "https://github.com/alexruperez/amulio-ha/tree/main/amulio"
