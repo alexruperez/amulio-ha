@@ -4,10 +4,10 @@ configuration:
     description: Reachable LAN or HTTPS origin used in Stremio manifests and playback links. Never use the Home Assistant Ingress URL.
   peer_tcp_port:
     name: aMule peer TCP port
-    description: TCP listener used for eD2K peer connectivity. Enable its network port separately if you want inbound peers.
+    description: Advanced eD2K daemon TCP listener. Network exposes its optional mapping separately; exposure does not prove router, NAT, or WAN accessibility.
   peer_udp_port:
     name: Kad UDP port
-    description: UDP listener used for Kad connectivity. Enable its network port separately if you want inbound peers.
+    description: Advanced Kad daemon UDP listener. Network exposes its optional mapping separately; exposure does not prove router, NAT, or WAN accessibility.
   preferred_languages:
     name: Preferred metadata languages
     description: Comma-separated language codes, for example en,es.
@@ -32,9 +32,6 @@ configuration:
   show_stream_technical_details:
     name: Show codec, HDR and release group
     description: Include file technical details in Stremio playback choices.
-  inbound_peer_ports_enabled:
-    name: Inbound peers enabled
-    description: Enable only after mapping both 4662/tcp and 4672/udp in Network. Otherwise Low ID and firewalled Kad are expected.
 network:
   8000/tcp: Stremio addon and playback endpoint. Enable only when clients can reach the configured public URL.
   4662/tcp: Optional aMule eD2K peer TCP port.

@@ -1,3 +1,8 @@
+## 0.1.16
+
+- Pin the app image build to core commit `a0164f0669519ee568a6c9c6aa3ee4c1a0ade86b` for the mobile Download manager UX.
+- Remove the redundant inbound-peer toggle. Optional `4662/tcp` and `4672/udp` mappings remain controlled only through the app Network page and do not establish router, NAT, or WAN reachability.
+
 ## 0.1.15
 
 - Keep manager API requests under the per-app Home Assistant Ingress prefix; the previous parent-relative paths escaped it before reaching aMulio.
