@@ -1,3 +1,7 @@
+## 0.1.23
+
+- Remove the redundant manager network-status panel; Instance readiness remains the single instance-health view.
+
 ## 0.1.22
 
 - Refresh the open Ingress download manager automatically and show live transfer progress bars.
