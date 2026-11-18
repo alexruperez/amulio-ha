@@ -1,3 +1,8 @@
+## 0.1.19
+
+- Load the Home Assistant Ingress Download manager when its section is opened and remove the unverifiable inbound-peer status.
+- Add selection and a standard confirmation dialog for deleting completed library files, with Ingress session/CSRF protection, server-side file revalidation and aMule shared-index reload.
+
 ## 0.1.18
 
 - Refine the Home Assistant Ingress Download manager after real-browser acceptance review: remove the non-actionable `Peers Unknown` tile, add spacing to the network status card, and show a readable library label while retaining the exact filename as technical detail.
