@@ -1,6 +1,6 @@
 # https://contributors.home-assistant.io/apps/reference/configuration/
 name: aMulio
-version: "0.1.15"
+version: "0.1.16"
 slug: amulio
 description: Self-hosted aMule node and private Stremio addon
 url: "https://github.com/alexruperez/amulio-ha/tree/main/amulio"
@@ -39,7 +39,6 @@ options:
   show_stream_sources: true
   show_stream_language: true
   show_stream_technical_details: true
-  inbound_peer_ports_enabled: false
 schema:
   public_url: url
   peer_tcp_port: port
@@ -52,4 +51,3 @@ schema:
   show_stream_sources: bool
   show_stream_language: bool
   show_stream_technical_details: bool
-  inbound_peer_ports_enabled: bool

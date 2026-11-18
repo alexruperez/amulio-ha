@@ -15,7 +15,7 @@ def main() -> None:
     required = {"name", "version", "slug", "description", "image", "arch", "options", "schema"}
     assert required <= config.keys()
     assert config["slug"] == APP.name
-    assert config["version"] == "0.1.15"
+    assert config["version"] == "0.1.16"
     assert config["arch"] == ["aarch64", "amd64"]
     assert config["homeassistant"] >= "2026.2.0"
     assert config["init"] is False
@@ -26,8 +26,9 @@ def main() -> None:
     assert all(port is None for port in config["ports"].values())
     assert config["options"]["public_url"].startswith("http")
     assert config["options"]["max_file_size_gb"] == 0
-    assert config["options"]["inbound_peer_ports_enabled"] is False
     assert set(config["options"]) == set(config["schema"])
+    assert "inbound_peer_ports_enabled" not in config["options"]
+    assert "inbound_peer_ports_enabled" not in config["schema"]
     assert not {"docker_api", "homeassistant_api", "hassio_api", "host_network", "host_pid"} & config.keys()
 
     runner = RUNNER.read_text()
@@ -43,7 +44,8 @@ def main() -> None:
     assert 'chmod 600 "$path"' in runner
     assert "--bind=127.0.0.1" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/incoming" in runner
-    assert "AMULIO_INBOUND_PEER_PORTS_ENABLED=$INBOUND_PEER_PORTS_ENABLED" in runner
+    assert "inbound_peer_ports_enabled" not in runner
+    assert "AMULIO_INBOUND_PEER_PORTS_ENABLED" not in runner
     assert "AMULIO_DEFAULT_RESULT_LIMIT=$MAX_RESULTS" in runner
     assert "AMULIO_DEFAULT_MAX_SIZE_GB=$MAX_FILE_SIZE_GB" in runner
     assert "AMULIO_ALLOWED_MEDIA_ROOTS=/data/temp" not in runner
@@ -65,7 +67,7 @@ def main() -> None:
     assert "ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24" in dockerfile
     assert "FROM ${BUILD_FROM}" in dockerfile
     assert "COPY rootfs /" in dockerfile
-    assert "ARG AMULIO_REF=0951846ad964561fed42353750d308a2f061b72b" in dockerfile
+    assert "ARG AMULIO_REF=23c5a78eb7a7f088b556b9808974c1011bc00073" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=cryptopp" in dockerfile
     assert "-DCRYPTOPP_INCLUDE_PREFIX=crypto++" not in dockerfile
     assert "libpcre2-32" in dockerfile
@@ -75,6 +77,21 @@ def main() -> None:
 
     for name in ("DOCS.md", "CHANGELOG.md", "translations/en.yaml", "translations/es.yaml"):
         assert (APP / name).is_file(), name
+    docs = (APP / "DOCS.md").read_text()
+    changelog = (APP / "CHANGELOG.md").read_text()
+    translations = [
+        (APP / "translations/en.yaml").read_text(),
+        (APP / "translations/es.yaml").read_text(),
+    ]
+    assert "inbound_peer_ports_enabled" not in docs
+    assert "inbound_peer_ports_enabled" not in changelog
+    assert all("inbound_peer_ports_enabled" not in translation for translation in translations)
+    assert "4662/tcp" in config["ports"]
+    assert "4672/udp" in config["ports"]
+    assert config["ports"]["4662/tcp"] is None
+    assert config["ports"]["4672/udp"] is None
+    assert "Network exposure does **not** prove router, NAT, or WAN accessibility." in docs
+    assert "advanced daemon listener ports" in docs
     assert (APP / "icon.png").is_file()
     assert (APP / "logo.png").is_file()
     assert (ROOT / "THIRD_PARTY_NOTICES.md").is_file()

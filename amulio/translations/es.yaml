@@ -4,10 +4,10 @@ configuration:
     description: Origen LAN o HTTPS alcanzable que se usa en los manifests y enlaces de reproducción de Stremio. No uses la URL de Ingress de Home Assistant.
   peer_tcp_port:
     name: Puerto TCP de pares aMule
-    description: Listener TCP para conectividad de pares eD2K. Activa su puerto de red por separado si quieres aceptar pares entrantes.
+    description: Listener TCP avanzado del daemon eD2K. Network expone su mapeo opcional por separado; exponerlo no prueba la accesibilidad del router, NAT o WAN.
   peer_udp_port:
     name: Puerto UDP Kad
-    description: Listener UDP para conectividad Kad. Activa su puerto de red por separado si quieres aceptar pares entrantes.
+    description: Listener UDP avanzado del daemon Kad. Network expone su mapeo opcional por separado; exponerlo no prueba la accesibilidad del router, NAT o WAN.
   preferred_languages:
     name: Idiomas de metadatos preferidos
     description: Códigos de idioma separados por comas, por ejemplo en,es.
@@ -32,9 +32,6 @@ configuration:
   show_stream_technical_details:
     name: Mostrar códec, HDR y grupo de release
     description: Incluye detalles técnicos del archivo en las opciones de reproducción de Stremio.
-  inbound_peer_ports_enabled:
-    name: Pares entrantes habilitados
-    description: Actívalo solo después de habilitar ambos mapeos de red 4662/tcp y 4672/udp. De lo contrario se espera Low ID y Kad con firewall.
 network:
   8000/tcp: Endpoint del addon y reproducción Stremio. Actívalo solo si los clientes pueden alcanzar la URL pública configurada.
   4662/tcp: Puerto TCP opcional de pares eD2K de aMule.

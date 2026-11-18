@@ -11,12 +11,11 @@
 ## Options
 
 - **Public URL**: the reachable origin used in manifest and playback URLs. For LAN usage it can be the HAOS host and enabled port `8000`; for remote use it must be your HTTPS reverse-proxy or tunnel origin.
-- **aMule peer TCP / Kad UDP ports**: the listener ports used inside aMule. Enable their matching app network mappings only if you deliberately allow inbound peer traffic.
+- **aMule peer TCP / Kad UDP ports**: advanced daemon listener ports used inside aMule. The app's **Network** page declares optional `4662/tcp` and `4672/udp` mappings, which remain disabled unless you enable them there. Network exposure does **not** prove router, NAT, or WAN accessibility.
 - **Preferred languages**: comma-separated metadata languages.
 - **Allow season packs**: lets searches return TV season packs.
 - **Maximum results / file size**: apply node-wide limits to the default private manifest; set maximum file size to `0` for no limit.
 - **Stream display**: independently show or hide size, source availability, detected language, and technical release details in Stremio choices.
-- **Inbound peers enabled**: set this only after enabling *both* matching app network mappings (`4662/tcp` and `4672/udp`). It makes the readiness UI state the intended topology; it is not a NAT reachability probe.
 
 ## Storage and backups
 
