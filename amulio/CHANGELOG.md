@@ -1,3 +1,8 @@
+## 0.1.20
+
+- Use the same standard confirmation dialog for cancelling active downloads as for deleting completed files.
+- Keep downloads still active in aMule's queue out of the completed shared-library view.
+
 ## 0.1.19
 
 - Load the Home Assistant Ingress Download manager when its section is opened and remove the unverifiable inbound-peer status.
